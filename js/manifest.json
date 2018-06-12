@@ -1,0 +1,15 @@
+{
+  "name": "SouPositivo",
+  "short_name": "SouPositivo",
+  "theme_color": "#2a0044",
+  "background_color": "#2a0044",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "images/logo.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    }
+  ]
+}
