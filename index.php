@@ -4,23 +4,42 @@
     require_once 'conn/login.php';
     $erros = array();
 
+    //verifica se houve erro na conexão
     if (!empty($erro_conexao)) {
        $erros [] = "<center>
                         <h3>Houve um erro de conexão.</h3>
                     </center><br>";
     }
-    //Iniciar sessão
+
+    //Inicia sessão
     session_start();
 
-    //Botão enviar
+    //Verifica se os dados estão corretos
     if (isset($_POST['enviar'])){
        
         $login = mysqli_escape_string($connect, $_POST['login']);
         $senha = mysqli_escape_string($connect, $_POST['senha']);
 
-        if (empty($login) || empty($senha)) {
-            $errors[] = "<li>Usuário e Senha são obrigatórios!</li> <br>";
-        } 
+        $sql = "SELECT 
+                    usu.*
+                FROM 
+                    usuario usu
+                WHERE
+                        usu.login = lower('$login') 
+                    AND usu.senha = (SELECT PASSWORD('$senha')) ";
+
+        $retorno = mysqli_query($connect, $sql);
+
+        if (mysqli_num_rows($retorno) == 0) {
+            $erros[] = "<center>
+                            <h3>Usuário ou Senha incorretos.</h3>
+                        </center><br>";
+        } else {
+            $dados = mysqli_fetch_array($retorno);
+            $_SESSION['logado'] = true;
+            $_SESSION['idUsuario'] = $dados ['idUsuario'];
+            header('Location: home.php');
+        }
     }
 ?>
 
@@ -69,12 +88,12 @@
                                 ?>
 
                         <div class="wrapper">
-                            <form class="form-signin" action="conn/login.php" method="POST">
+                            <form class="form-signin" action="" method="POST">
                                 
                                 <input type="text" size="34" class="form-control" name="login" placeholder="Usuário" required="" autofocus="" style="width: 100%;" /><br />
                                 <input type="password" size="34" class="form-control" name="senha" placeholder="Senha" required="" style="width: 100%;" />
                                 <center> 
-                                    <a href="home.php">
+                                    <a href="#">
                                         <button type="submit" class="button location" name="enviar"> Enviar </button>
                                     </a>
                                 </center>
@@ -84,14 +103,6 @@
                     </div>
                 </div> 
             </div>  
-
-        <!-- 
-
-             <p class=""><i class="fa fa-user-circle-o" > </i>
-                                    <a href="#"> Entrar </a>
-                                </p>
-
-        -->
 
             <div class="esqsenha">
                 <center> <a href="#" style="color:#2179AF">Esqueceu a senha?</a></center>

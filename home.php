@@ -1,4 +1,39 @@
 <!DOCTYPE html>
+
+<?php
+    //Conexão com o banco
+    require_once 'conn/login.php';
+    $erros = array();
+
+    //verifica se houve erro na conexão
+    if (!empty($erro_conexao)) {
+       $erros [] = "<center>
+                        <h3>Houve um erro de conexão.</h3>
+                    </center><br>";
+    }
+
+    //Inicia sessão
+    session_start();
+
+    // Verifica sessão
+    if (!isset($_SESSION['logado'])){
+        header('Location: index.php');
+    }
+
+
+    //Dados do usuário
+    $id = $_SESSION['idUsuario'];
+    $sql = "SELECT 
+                usu.*
+            FROM 
+                usuario usu
+            WHERE
+                usu.idUsuario = $id ";
+    $retorno = mysqli_query($connect, $sql);
+    $dados= mysqli_fetch_array($retorno);
+    mysqli_close($connect);
+?>
+
 <html>
 
     <head>
@@ -40,13 +75,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Olá, Fernando </a> 
+                <a class="navbar-brand" href="#">Olá, <?php echo $dados['nome']; ?> </a> 
             </div>
 
 
             <!-- Barra de último acesso e saída do sistema -->
             <div class = "ultimoAcesso"> Último acesso : 09 de Junho de 2018 &nbsp;
-                <a href="index.php" class="btn btn-danger square-btn-adjust">Sair</a> 
+                <a href="logout.php" class="btn btn-danger square-btn-adjust">Sair</a> 
             </div>
 
         </nav>   
