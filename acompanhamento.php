@@ -78,7 +78,7 @@
         
                 <!-- Barra de último acesso e saída do sistema -->
                 <div class = "ultimoAcesso"> Último acesso : 09 de Junho de 2018 &nbsp;
-                    <a href="logout.php" class="btn btn-danger square-btn-adjust">Sair</a> 
+                    <a href="conn/logout.php" class="btn btn-danger square-btn-adjust">Sair</a> 
                 </div>
     
             </nav>   
