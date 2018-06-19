@@ -6,5 +6,5 @@
     session_destroy();
 
     //Página onde o usuário será redirecionado
-    header('Location: /index.php');
+    header('Location: ../index.php');
 ?>
