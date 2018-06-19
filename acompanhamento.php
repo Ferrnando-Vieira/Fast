@@ -57,7 +57,7 @@
                                                                 , sta.descricaoStatus as descricao, cha.idChamado as codChamado
                                                         FROM 
                                                                 chamado cha     
-                                                            left join usuario nsi on nsi.idUsuario = cha.idUsuario                                                                
+                                                            left join usuario nsi on nsi.idUsuario = cha.idUsuarioNSI                                                                
                                                             join usuario usu on usu.idUsuario = cha.idUsuario  
                                                             join statusChamado sta on sta.idStatus = cha.idStatus                                                            
                                                         WHERE 
@@ -69,7 +69,7 @@
                                             <tr class="odd gradeX">
                                                 <td><?php echo $dados['ticket'] ?></td>
                                                 <td><?php echo $dados['responsavel'] ?></td>
-                                                <td><?php echo $dados['horaChamado'] ?></td>
+                                                <td><?php echo DATE('d/m/Y H:i:s', strtotime($dados['horaChamado'])); ?></td>
                                                 <td class="center"><?php echo $dados['local'] ?></td>
                                                 <td class="center"><?php echo $dados['descricao'] ?></td>
                                             </tr>
