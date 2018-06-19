@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 
-<?php 
-
-    include_once 'conn/sessao.php';  
-
-    //Após o usuário enviar os dados será exibido uma mensagem de erro ou de sucesso. (Ver enviarDados.php)
-    if(isset($_SESSION['mensagem'])) {
-        echo $_SESSION['mensagem'];
-    }
-?>
+<?php include_once 'conn/sessao.php'; ?>
 
 <html>
 
@@ -18,7 +10,7 @@
 
     <!-- Inicio Corpo -->
     <div id="wrapper">               
-
+    
         <!-- Menu do sistema -->
         <?php include_once 'common/menu.php'; ?>
 
@@ -28,8 +20,19 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <h2>Abertura de Chamado</h2>   
+                    <h2>Abertura de Chamado</h2> 
+
+                    <?php     
+                    //Após o usuário enviar os dados será exibido uma mensagem de erro ou de sucesso. (Ver enviarDados.php)
+                    if(isset($_SESSION['mensagem'])) {
+                        $alerta = $_SESSION['mensagem'];
+                        echo "<h5>$alerta</h5>";
+                    }
+
+                    unset($_SESSION['mensagem']);
+                    ?>  
                 </div>
+
             </div>              
 
              <hr/>
