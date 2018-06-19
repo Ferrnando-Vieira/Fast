@@ -13,7 +13,7 @@
 
 
             <!-- Barra de último acesso e saída do sistema -->
-            <div class = "ultimoAcesso"> Último acesso : <?php echo $dados_user['ultimoAcesso']; ?> &nbsp;
+            <div class = "ultimoAcesso"> Último acesso : <?php echo DATE('d/m/Y H:i:s', strtotime($dados_user['ultimoAcesso'])); ?> &nbsp;
                 <a href="conn/logout.php" class="btn btn-danger square-btn-adjust">Sair</a> 
             </div>
 
