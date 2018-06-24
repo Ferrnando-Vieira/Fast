@@ -18,21 +18,22 @@
     if (isset($_POST['enviar'])){
        
         $login = mysqli_escape_string($connect, $_POST['login']);
+        $login = strtolower($login);
         $senha = mysqli_escape_string($connect, $_POST['senha']);
 
-        $sql = "SELECT usu.* FROM usuario usu WHERE usu.login = lower('$login') AND usu.senha = (SELECT PASSWORD('$senha')) ";
+        $sql = "SELECT usu.login, usu.senha, idUsuario FROM usuario usu WHERE usu.login = '$login' ";
 
         $retorno = mysqli_query($connect, $sql);
+        $dados_usuario = mysqli_fetch_array($retorno);
 
-        if (mysqli_num_rows($retorno) == 0) {
-            $erros[] = "<center>
-                            <h3>Usuário ou Senha incorretos.</h3>
-                        </center>";
-        } else {
-            $dados = mysqli_fetch_array($retorno);
+        if (password_verify($senha, $dados_usuario['senha'])) {
             $_SESSION['logado'] = true;
-            $_SESSION['idUsuario'] = $dados ['idUsuario'];
-            header('Location: home.php');
+            $_SESSION['idUsuario'] = $dados_usuario ['idUsuario'];
+            header('Location: home.php');            
+        } else {
+            $erros[] = "<center>
+                            <h3>Usuário ou Senha incorretos.</h3>".$dados_usuario ['login']." ".$dados_usuario ['senha']."
+                        </center>";
         }
     }
 ?>
