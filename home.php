@@ -23,7 +23,7 @@
                     <h2>Abertura de Chamado</h2> 
 
                     <?php     
-                    //Após o usuário enviar os dados será exibido uma mensagem de erro ou de sucesso. (Ver enviarDados.php)
+                    //Após o usuário enviar os dados será exibido uma mensagem de erro ou de sucesso. (Ver abrir_chamado.php)
                     if(isset($_SESSION['mensagem'])) {
                         $alerta = $_SESSION['mensagem'];
                         echo "<h5>$alerta</h5>";
@@ -37,13 +37,13 @@
 
              <hr/>
             
-            <form accept-charset="UTF-8" action="conn/enviarDados.php" method="POST" enctype="multipart/form-data">
+            <form accept-charset="UTF-8" action="conn/abrir_chamado.php" method="POST" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-6">                        
                         <div class="form-group">                        
                             <label for="subject">Campus</label>
                                 <select name="campus" class="form-control" required="required" style="width:50%">
-                                    <option value="" selected=""> - </option>                                                                             
+                                    <option value="" selected=""></option>                                                                             
                                         <?php 
 
                                             $sql = " SELECT cam.idCampus, cam.nomeCampus
@@ -67,8 +67,8 @@
                         <p></p> 
 
                         <label for="subject">Categoria</label>
-                            <select id="subject" name="categoria" class="form-control" required="required" style="width:50%" >
-                                <option value="na" selected=""> - </option>
+                            <select id="subject" name="categoria" class="form-control" required="" style="width:50%" >
+                                <option value="" selected=""></option>
                                 <?php 
 
                                             $sql = " SELECT *

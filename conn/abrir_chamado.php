@@ -14,6 +14,8 @@ if (!isset($_SESSION['logado'])){
 //Id do usuario que abriu sessão
 $id = $_SESSION['idUsuario'];
 
+$erro = 0; // 0 = sem erro, 1 = com erro
+
 //SQL para gerar o número do chamado, que é a junção do ano+mes+dia de abertura do chamado + usuario (5 dígitos) que abriu o chamado + o número de chamados 
 // abertos por ele no dia (2 digitos).
 $sql = "SELECT CONCAT(EXTRACT(YEAR_MONTH FROM NOW()), EXTRACT(DAY FROM CURDATE()), LPAD ($id, 5, '0'), LPAD(ok.totalChamados, 2, '0')) AS numero_chamado,
@@ -21,19 +23,19 @@ $sql = "SELECT CONCAT(EXTRACT(YEAR_MONTH FROM NOW()), EXTRACT(DAY FROM CURDATE()
         FROM (
             SELECT COUNT(idChamado) + 1 as totalChamados 
             FROM chamado 
-            WHERE idUsuario = 1) as ok;";
+            WHERE idUsuario = $id) as ok;";
 
-$aberturaChamado = mysqli_query($connect, $sql);
+$retorno = mysqli_query($connect, $sql);
 
-$ticket = mysqli_fetch_array($aberturaChamado);
+$ticket = mysqli_fetch_array($retorno);
 
 $numero_chamado = $ticket['numero_chamado'];
 $abertura_chamado = $ticket['abertura']; 
+
 $campus = mysqli_escape_string($connect, $_POST['campus']);
 $local = mysqli_escape_string($connect, $_POST['local']);
 $categoria = mysqli_escape_string($connect, $_POST['categoria']);
 $descricao = mysqli_escape_string($connect, $_POST['descricao']);
-$upload_status = 0; // 0 = sem erro, 1 = com erro
 
 
  // Upload de arquivos multiplos para o servidor
@@ -64,7 +66,7 @@ if(isset($_POST['enviar'])){
                 $possui_anexo = true;
             } else {
                 $_SESSION['mensagem'] = "<br> Um ou mais arquivos não puderam ser adicionados!<br>";
-                $upload_status = 1;           
+                $erro = 1;           
             }
 
             $contador++;
@@ -76,7 +78,7 @@ if(isset($_POST['enviar'])){
 }
 
  //Abertura do chamado caso não tenha ocorrido erro de upload
-if ($upload_status == 0) {
+if ($erro == 0) {
 
     // SQL para criação do chamado
     $ins_chamado = "INSERT INTO chamado (idUsuario,idCampus,idCategoria, local ,dtHoraAbertura, ticket ,descricao, anexo) 
@@ -91,7 +93,7 @@ if ($upload_status == 0) {
             $_SESSION['mensagem'] = "Chamado aberto com sucesso.";
             header('Location: ../home.php');
         }
-    //Caso não tenha sido é exibido uma mensagem de erro.
+    //Caso não tenha sido criado o chamado é exibido uma mensagem de erro.
     } else {
         $_SESSION['mensagem'] = "Não foi possível abrir o chamado, tente novamente mais tarde.";
         header('Location: ../home.php');
