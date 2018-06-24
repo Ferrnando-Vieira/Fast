@@ -36,4 +36,6 @@
                         </center>";
         }
     }
+
+    mysqli_close();
 ?>
