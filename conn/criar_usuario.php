@@ -32,7 +32,7 @@ if ($_POST["senha"] === $_POST["confirma_senha"]) {
     $senha = mysqli_escape_string($connect, $_POST['senha']);
 
     //Criando o hash da senha para inserção no banco de dados
-    $hash_senha = password_hash($senha, PASSWORD_DEFAULT);
+    $hash_senha = md5($senha);
  }
  else {
     $_SESSION['mensagem'] = "As senhas devem ser iguais.<br>";
@@ -60,7 +60,7 @@ if ($erro == 0) {
 
     // SQL para criação do usuário
     $ins_usuario = "INSERT INTO usuario (idPerfil,idCampus, nome, sobrenome, email, telefone ,genero, login, senha) 
-                    VALUES ($perfil, $campus, '$nome', '$sobrenome', '$email', '$telefone','$genero', '$login', '$hash_senha');";
+                    VALUES ($perfil, $campus, '$nome', '$sobrenome', '$email', '$telefone','$genero', '$login', '$hash_senha';";
 
     //verifica se foi possível criar o usuário
     if (mysqli_query($connect, $ins_usuario)) {
