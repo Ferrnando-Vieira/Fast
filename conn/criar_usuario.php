@@ -27,7 +27,7 @@ $perfil = mysqli_escape_string($connect, $_POST['perfil']);
 $login = mysqli_escape_string($connect, $_POST['login']);
 $login = strtolower($login);
 
-//Se as senhas não forem iguais é apresentada uma mensagem de erro.
+//Verificação das senha digitadas
 if ($_POST["senha"] === $_POST["confirma_senha"]) {
     $senha = mysqli_escape_string($connect, $_POST['senha']);
 
@@ -40,7 +40,7 @@ if ($_POST["senha"] === $_POST["confirma_senha"]) {
  }
 
 $verifica_login = " SELECT usu.* FROM usuario usu
-                    WHERE usu.login = lower('$login');";
+                    WHERE usu.login = $login;";
 
 $retorno = mysqli_query($connect, $verifica_login);
 
@@ -60,7 +60,7 @@ if ($erro == 0) {
 
     // SQL para criação do usuário
     $ins_usuario = "INSERT INTO usuario (idPerfil,idCampus, nome, sobrenome, email, telefone ,genero, login, senha) 
-                    VALUES ($perfil, $campus, '$nome', '$sobrenome', '$email', '$telefone','$genero', '$login', '$hash_senha';";
+                    VALUES ($perfil, $campus, '$nome', '$sobrenome', '$email', '$telefone','$genero', '$login', '$hash_senha');";
 
     //verifica se foi possível criar o usuário
     if (mysqli_query($connect, $ins_usuario)) {
