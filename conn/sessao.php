@@ -25,5 +25,4 @@
     $sql = "SELECT usu.* FROM usuario usu WHERE usu.idUsuario = $id ";
     $sql_user = mysqli_query($connect, $sql);
     $dados_user = mysqli_fetch_array($sql_user);
-
 ?>

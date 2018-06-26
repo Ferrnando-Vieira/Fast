@@ -20,7 +20,7 @@
         $login = mysqli_escape_string($connect, $_POST['login']);
         $senha = mysqli_escape_string($connect, $_POST['senha']);
 
-        $sql = "SELECT usu.login, usu.senha FROM usuario usu WHERE usu.login = lower('$login');";
+        $sql = "SELECT usu.* FROM usuario usu WHERE usu.login = lower('$login');";
 
         $retorno = mysqli_query($connect, $sql);
         $dados_usuario = mysqli_fetch_array($retorno);
