@@ -29,7 +29,14 @@
         if (md5($senha) == $dados_usuario['senha']) {
             $_SESSION['logado'] = true;
             $_SESSION['idUsuario'] = $dados_usuario ['idUsuario'];
-            header('Location: home.php');            
+            $_SESSION['idPerfil'] = $dados_usuario ['idPerfil'];
+
+            if ($_SESSION['perfil'] == 1) {
+                header('Location: home.php'); 
+            }else{
+                header('Location: acompanhamento.php');
+            }
+                       
         } else {
             $erros[] = "<center>
                             <h3>Usuário ou Senha incorretos.</h3>
