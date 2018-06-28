@@ -18,10 +18,17 @@
         header('Location: index.php');
     }
 
-
-
     //Dados do usuário
     $id = $_SESSION['idUsuario'];
+    $perfil = $_SESSION['idPerfil'];
+    $ultimo_acesso = $_SESSION['ultimoAcesso'];
+
+    if ($perfil == 1) {
+        $home = "home.php";
+    }else{
+        $home = "acompanhamento.php";
+    }
+
     $sql = "SELECT usu.* FROM usuario usu WHERE usu.idUsuario = $id ";
     $sql_user = mysqli_query($connect, $sql);
     $dados_user = mysqli_fetch_array($sql_user);
