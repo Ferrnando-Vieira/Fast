@@ -44,35 +44,62 @@ if(isset($_POST['enviar'])){
     //Loop só será realizado caso exista algum arquivo
     if ($_FILES['arquivos_']['name'][0] <> "") {
 
-        $totalArquivos = count($_FILES['arquivos_']['name']);
-        $contador = 0;
+            $totalArquivos = count($_FILES['arquivos_']['name']);
+            $contador = 0;
 
-        while ($contador < $totalArquivos) {    
+            while ($contador < $totalArquivos) {    
 
-            //Extensão do arquivo
-            $extensao = pathinfo($_FILES['arquivos_']['name'][$contador], PATHINFO_EXTENSION);
+                //Extensão do arquivo
+                $extensao = pathinfo($_FILES['arquivos_']['name'][$contador], PATHINFO_EXTENSION);
 
-            //Pasta onde o arquivo será transferido
-            $pasta = "../users/user_uplod/";
-            //Nome temporário do arquivo
-            $temporario = $_FILES['arquivos_']['tmp_name'][$contador];
+                //Tamanho do arquivo
+                (int)$tamanho = $_FILES["file"]["size"][$contador];                
 
-            //O nome do arquivo é o ticket concatenado com o numero do arquivo no contador.
-            $novoNome = $numero_chamado.($contador + 1).".$extensao";
-            
-            //Arquivo sendo renomeado e transferido para a pasta do servidor.
-            if (move_uploaded_file($temporario, $pasta.$novoNome)) {
-                $_SESSION['mensagem'] = "Upload do(s) arquivo(s) realizado! <br>";  
-                $possui_anexo = true;
-            } else {
-                $_SESSION['mensagem'] = "<br> Um ou mais arquivos não puderam ser adicionados!<br>";
-                $erro = 1;           
+              /*  //Pasta onde o arquivo será transferido
+                $pasta = "../users/user_uplod/";*/
+
+                //Nome temporário do arquivo
+                $temporario = $_FILES['arquivos_']['tmp_name'][$contador];
+ 
+                //Nome sem a extensão
+                $nome = $numero_chamado.($contador + 1);
+
+                //Arquivo
+                $arquivo = file_get_contents($temporario);
+ 
+                //Escape para evitar erro no MySQL
+                $arquivo = mysqli_real_escape_string($connect,$arquivo);
+
+
+                //Sql para inserir o arquivo no banco
+                $sql = "INSERT INTO arquivos (nomeArquivo, extensaoArquivo, arquivo)
+                        VALUES ('$nome', '$extensao', '$arquivo');";
+                
+                if (mysqli_query($connect, $sql)) {
+                    $_SESSION['mensagem'] = "Upload do(s) arquivo(s) realizado! <br>";  
+                    $possui_anexo = true;
+                } else {
+                    $_SESSION['mensagem'] = "<br> Um ou mais arquivos não puderam ser adicionados!<br>";
+                    $erro = 1;                      
+                }
+      /*
+                //O nome do arquivo é o ticket concatenado com o numero do arquivo no contador e a extensão do mesmo.
+                $novoNome = $numero_chamado.($contador + 1).".$extensao";
+                   
+                //Arquivo sendo renomeado e transferido para a pasta do servidor.
+                if (move_uploaded_file($temporario, $pasta.$novoNome)) {
+                    $_SESSION['mensagem'] = "Upload do(s) arquivo(s) realizado! <br>";  
+                    $possui_anexo = true;
+                } else {
+                    $_SESSION['mensagem'] = "<br> Um ou mais arquivos não puderam ser adicionados!<br>";
+                    $erro = 1;           
+                }
+        */
+                $contador++;
             }
-
-            $contador++;
-
-        }
+        
     } else {
+
         $possui_anexo = false;
     }
 }
@@ -95,7 +122,8 @@ if ($erro == 0) {
         }
     //Caso não tenha sido criado o chamado é exibido uma mensagem de erro.
     } else {
-        $_SESSION['mensagem'] = "Não foi possível abrir o chamado, tente novamente mais tarde.";
+        $_SESSION['mensagem'] = "Não foi possível abrir o chamado. 
+                             <br>Verifique se o tamanho somado dos arquivos não ultrapassa 2MB ou tente novamente mais tarde.";
         header('Location: ../home.php');
     }
 } else {
