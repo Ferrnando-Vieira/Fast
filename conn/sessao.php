@@ -26,7 +26,7 @@
     if ($perfil == 1) {
         $home = "home.php";
     }else{
-        $home = "acompanhamento.php";
+        $home = "acompanhamento.php?status=0";
     }
 
     $sql = "SELECT usu.* FROM usuario usu WHERE usu.idUsuario = $id ";

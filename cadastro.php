@@ -1,9 +1,6 @@
 <!DOCTYPE html>
-
-<?php include_once 'conn/sessao.php'; ?>
-
 <html>
-
+    <?php include_once 'conn/sessao.php'; ?>
     <?php include_once 'common/header.php'; ?>
 
     <body>
@@ -67,7 +64,7 @@
                             <select id="subject" name="campus" class="form-control" required="required" style="width:40%" >
                                 <option value="" selected=""></option>
                                 <?php 
-                                    $sql = " SELECT *
+                                    $sql = "SELECT *
                                             FROM  campus
                                             ORDER BY nomeCampus ";
                                                     
@@ -92,13 +89,22 @@
                             <label for="subject">Tipo de perfil</label>
                                 <select id="subject" name="perfil" class="form-control" required="required" style="width:40%" >
                                         <?php 
-                                            $sql = " SELECT *
+
+                                            if ($perfil <> 4) { 
+                                                $condicao = "idPerfil <> 4";
+                                            } else {
+                                                $condicao = "1 = 1";
+                                            }
+
+                                            $sql = "SELECT *
                                                     FROM  perfil
+                                                    WHERE
+                                                        $condicao
                                                     ORDER BY idPerfil ";
                                                             
-                                            $perfil = mysqli_query ($connect, $sql);
+                                            $tipo_perfil = mysqli_query ($connect, $sql);
 
-                                            while ($dados = mysqli_fetch_array($perfil)) {
+                                            while ($dados = mysqli_fetch_array($tipo_perfil)) {
                                                 echo '<option value="'.$dados['idPerfil'].'">'.$dados['nomePerfil'].'</option>';
                                             };
                                         ?>   

@@ -35,7 +35,7 @@
             if ($_SESSION['perfil'] == 1) {
                 header('Location: home.php'); 
             }else{
-                header('Location: acompanhamento.php');
+                header('Location: acompanhamento.php?status=0');
             }
                        
         } else {

@@ -1,5 +1,14 @@
 ﻿<!DOCTYPE html>
-<?php include_once 'conn/sessao.php'; ?>
+<?php include_once 'conn/sessao.php'; 
+
+    if (isset($_GET['status']) and $_GET['status'] <> 0 ) {
+        $status_chamado = $_GET['status'];
+    } elseif (isset($_GET['status']) and $_GET['status'] == 0) {
+        $status_chamado = null;        
+    } else {
+        $_SESSION['mensagem'] = "Não foi possível exibir os chamados, tente novamente mais tarde.";
+    }
+?>
 
 <html>
 
@@ -29,7 +38,13 @@
                                         } else {
                                             echo 'Fila de chamados';
                                         }
-                                                
+                                             
+                                        if(isset($_SESSION['mensagem'])) {
+                                            $alerta = $_SESSION['mensagem'];
+                                            echo "<h5>$alerta</h5>";
+                                        }
+                    
+                                        unset($_SESSION['mensagem']);
                                     ?>
                                 </h2>                         
                             </div>
@@ -75,15 +90,37 @@
                                         <tbody>                                                                                            
                                             <?php 
 
-                                                if ($idPerfil == 1) {
-                                                    $condicao = "usu.idUsuario = $id AND cha.idStatus not in (4,5)";
-                                                } else {
-                                                    $condicao =  "cha.idStatus not in (4,5)";
+                                                if ($status_chamado == 0) {
+
+                                                    //Caso o usuário tenha clicado para ver o histórico, ele só verá os chamados dele
+                                                    if ($perfil == 1) {
+                                                        $condicao = "usu.idUsuario = $id AND cha.idStatus not in (4,5)";
+
+                                                    //Caso não seja um usuário comum e o mesmo tenha clicado para ver quais chamados estão com ele    
+                                                    }elseif (isset($_GET['idUsr']) and $perfil <> 1){
+                                                        $condicao = "nsi.idUsuario = $id AND cha.idStatus not in (4,5)";
+
+                                                    //Caso não seja um usuaŕio comum e o mesmo tenha clicado para ver a fila de chamados
+                                                    }else {
+                                                        $condicao =  "cha.idStatus not in (4,5)";
+                                                    }
+
+                                                //Chamados por Status
+                                                }else{
+                                                    
+                                                    //Caso seja um usuário comum, ele verá apenas os chamados no status escolhido que ele criou
+                                                    if ($perfil == 1) {
+                                                        $condicao = "usu.idUsuario = $id AND cha.idStatus = $status_chamado";
+
+                                                    //Caso não seja um usuaŕio comum e o mesmo tenha clicado para algum status, ele verá todos os chamados daquele status
+                                                    }else {
+                                                        $condicao =  "cha.idStatus = $status_chamado";
+                                                    }
                                                 }
 
                                                 $sql = "SELECT cha.ticket as ticket, coalesce(concat(nsi.nome, nsi.sobrenome), 'Sem responsável no momento') as responsavel
                                                                 , cha.dtHoraAbertura as horaChamado, cha.local as 'local'
-                                                                , sta.descricaoStatus as descricao, cha.idChamado as codChamado
+                                                                , sta.nomeStatus as descricao, cha.idChamado as codChamado
                                                                 , concat(usu.nome, ' ', usu.sobrenome) as usuario 
                                                         FROM 
                                                                 chamado cha     
@@ -97,23 +134,22 @@
 
                                                 while ($dados = mysqli_fetch_array($chamado)) {
                                             ?>
-                                            <tr class="odd gradeX">
-                                                <td><?php echo $dados['ticket'] ?></td>                                                
-                                                <td><?php
-                                                        if ($perfil == 1) {
-                                                            echo $dados['responsavel'];
-                                                        } else {
-                                                            echo $dados['usuario'];
-                                                        }                                                        
-                                                    ?>
-                                                </td>
-                                                <td><?php echo DATE('d/m/Y H:i:s', strtotime($dados['horaChamado'])); ?></td>
-                                                <td class="center"><?php echo $dados['local'] ?></td>
-                                                <td class="center"><?php echo $dados['descricao'] ?></td>
-                                            </tr>
+                                                <tr class="odd gradeX">
+                                                    <td><?php echo $dados['ticket'] ?></td>                                                
+                                                    <td><?php
+                                                            if ($perfil == 1) {
+                                                                echo $dados['responsavel'];
+                                                            } else {
+                                                                echo $dados['usuario'];
+                                                            }                                                        
+                                                        ?>
+                                                    </td>
+                                                    <td><?php echo DATE('d/m/Y H:i:s', strtotime($dados['horaChamado'])); ?></td>
+                                                    <td class="center"><?php echo $dados['local'] ?></td>
+                                                    <td class="center"><?php echo $dados['descricao'] ?></td>
+                                                </tr>
                                             
-                                            <?php }; 
-                                                 ?>
+                                            <?php }; ?>
 
                                         </tbody>
                                     </table>

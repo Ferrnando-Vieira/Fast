@@ -3,5 +3,10 @@
 
 .formulario {
     margin-left: 20%;
-    margin-top: 30%;
+    margin-top: 30%;   
 }
+
+#link_tabela {
+    color:inherit;
+    text-decoration: none;
+} 
