@@ -49,7 +49,7 @@
                                         <tbody>                                                                                            
                                             <?php 
 
-                                                if ($perfil != 4) { 
+                                                if (!$usuario_adm) { 
                                                     $condicao = "usu.idPerfil <> 4";
                                                 } else {
                                                     $condicao = "1 = 1";
