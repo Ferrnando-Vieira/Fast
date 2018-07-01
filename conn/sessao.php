@@ -19,8 +19,7 @@
     }
 
     //Dados do usuário
-    $id = $_SESSION['idUsuario'];
-    $perfil = $_SESSION['idPerfil'];
+    $id = $_SESSION['idUsuario'];    
     $ultimo_acesso = $_SESSION['ultimoAcesso'];
 
     if ($perfil == 1) {
@@ -29,7 +28,15 @@
         $home = "acompanhamento.php?status=0";
     }
 
-    $sql = "SELECT usu.* FROM usuario usu WHERE usu.idUsuario = $id ";
+    $sql = "SELECT usu.*, 
+            case when idPerfil = 1 then true else false end as usuario_comum ,
+            case when idPerfil = 4 then true else false end as usuario_adm
+            FROM usuario usu 
+            WHERE usu.idUsuario = $id ";
     $sql_user = mysqli_query($connect, $sql);
     $dados_user = mysqli_fetch_array($sql_user);
+
+    $perfil = $dados_user['idPerfil'];
+    $usuario_comum = $dados_user['usuario_comum'];
+    $usuario_adm = $dados_user['usuario_adm'];
 ?>

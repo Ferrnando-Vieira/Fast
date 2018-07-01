@@ -33,7 +33,7 @@
                             <div class="col-md-12">
                                 <h2>
                                     <?php
-                                        if ($perfil == 1) {
+                                        if ($usuario_comum) {
                                             echo 'Acompanhamento de Chamados';
                                         } else {
                                             echo 'Fila de chamados';
@@ -90,14 +90,14 @@
                                         <tbody>                                                                                            
                                             <?php 
 
-                                                if ($status_chamado == 0) {
+                                                if (is_null($status_chamado)) {
 
                                                     //Caso o usuário tenha clicado para ver o histórico, ele só verá os chamados dele
-                                                    if ($perfil == 1) {
+                                                    if ($usuario_comum) {
                                                         $condicao = "usu.idUsuario = $id AND cha.idStatus not in (4,5)";
 
                                                     //Caso não seja um usuário comum e o mesmo tenha clicado para ver quais chamados estão com ele    
-                                                    }elseif (isset($_GET['idUsr']) and $perfil <> 1){
+                                                    }elseif (isset($_GET['idUsr']) and !$usuario_comum){
                                                         $condicao = "nsi.idUsuario = $id AND cha.idStatus not in (4,5)";
 
                                                     //Caso não seja um usuaŕio comum e o mesmo tenha clicado para ver a fila de chamados
@@ -109,11 +109,11 @@
                                                 }else{
                                                     
                                                     //Caso seja um usuário comum, ele verá apenas os chamados no status escolhido que ele criou
-                                                    if ($perfil == 1) {
+                                                    if ($usuario_comum) {
                                                         $condicao = "usu.idUsuario = $id AND cha.idStatus = $status_chamado";
 
                                                     //Caso não seja um usuaŕio comum e o mesmo tenha clicado para algum status, ele verá todos os chamados daquele status
-                                                    }else {
+                                                    } else {
                                                         $condicao =  "cha.idStatus = $status_chamado";
                                                     }
                                                 }

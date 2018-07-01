@@ -110,7 +110,7 @@ if ($erro == 0) {
         
     //Caso não tenha sido criado é exibido uma mensagem de erro.
     } else {
-        $_SESSION['mensagem'] = "Não foi possível alterar os dados, tente novamente mais tarde.";
+        $_SESSION['mensagem'] = "Não foi possível alterar os dados, tente novamente mais tarde.".$sql;
         header('Location: ../usuario.php?idUsr='.$idUsuario);
     }
 } else {

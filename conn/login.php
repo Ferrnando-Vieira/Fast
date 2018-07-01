@@ -29,7 +29,6 @@
         if (md5($senha) == $dados_usuario['senha']) {
             $_SESSION['logado'] = true;
             $_SESSION['idUsuario'] = $dados_usuario ['idUsuario'];
-            $_SESSION['idPerfil'] = $dados_usuario ['idPerfil'];
             $_SESSION['ultimoAcesso'] = $dados_usuario ['ultimoAcesso'];
 
             if ($_SESSION['perfil'] == 1) {

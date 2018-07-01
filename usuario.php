@@ -8,6 +8,30 @@
         $_SESSION['mensagem'] = "Não foi possível recuperar o usuário!";
     }
 
+    $sql = "SELECT
+              CONCAT(usu.nome, ' ',usu.sobrenome) as nome_completo, cam.nomeCampus as campus_usuario
+            , cam.idCampus as idCampus_usuario, per.nomePerfil as perfil_usuario
+            , per.idPerfil as idPerfil_usuario, usu.email, usu.telefone, usu.login
+            FROM
+              usuario usu
+            , campus cam
+            , perfil per
+            WHERE
+                usu.idCampus = cam.idCampus
+                AND usu.idPerfil = per.idPerfil
+                AND usu.idUsuario = $idUsr ";
+                
+    $retorno = mysqli_query ($connect, $sql);
+
+    $dado_atual = mysqli_fetch_array($retorno);
+
+    $id_perfis= array (
+        0 => '1',
+        1 => '2',
+        2 => '3',
+        3 => '4',
+    );
+
 ?>
 
 <html>
@@ -40,107 +64,160 @@
                         unset($_SESSION['mensagem']);
                     ?>  
 
-                </div>
+                </div>  
             </div>              
 
              <hr/>
             
             <form accept-charset="UTF-8" <?php echo "action='conn/alterar_dados.php?idUsr=$idUsr' "; ?> method="POST">
-                <div class="row">
-                    <div class="col-md-6">                        
-                        <div class="form-group">                        
-                           
-                                                               
-                            <label for="subject">Alterar Email:</label>              
-                                <fieldset>                            
-                                    <input type="email" placeholder="batman@batcaverna.com"
-                                        size="30" style="width:40%" class="form-control" name="email">
-                                </fieldset>
-                            <p></p>    
 
-                            <label for="subject">Alterar Telefone:</label>
-                                <input type="text" class="form-control" name="telefone" style="width:40%"
-                                placeholder="Ex.: 998764321">                
-                             <p></p>
-
-                            <label for="subject">Alterar Campus</label>
-                            <select id="subject" name="campus" class="form-control" style="width:40%" >
-                                <option value="" selected=""></option>
-                                <?php 
-                                    $sql = " SELECT *
-                                            FROM  campus
-                                            ORDER BY nomeCampus ";
-                                                    
-                                    $perfil = mysqli_query ($connect, $sql);
-
-                                    while ($dados = mysqli_fetch_array($perfil)) {
-                                        echo '<option value="'.$dados['idCampus'].'">'.$dados['nomeCampus'].'</option>';
-                                    };
-                                ?> 
-                            </select>
-                            <p></p>                        
-
-                            <?php 
-                                //Usuários comuns não podem alterar o próprio perfil. 
-                                if ($perfil <> 0) {
-                                    $selecao_perfil = "
-                                    <label for='subject'>Alterar Tipo de perfil</label>
-                                        <select id='subject' name='perfil' class='form-control' style='width:40%' >
-                                            <option value=''></option> ";
-                                            
-                                            //Apenas administradores podem criar outros administradores.
-
-                                            if ($perfil <> 4) { 
-                                                $condicao = "idPerfil <> 4";
-                                            } else {
-                                                $condicao = "1 = 1";
-                                            }
-
+                <!-- Linha com o nome e sobrenome do usuário e Campus-->
+                <div class="row">    
+                    <div class="form-group">                        
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-7">
+                            <fieldset disabled>                                
+                                <div class="col-sm-3" >
+                                    <label for="subject">Nome Completo:</label>
+                                </div>
+                                <div class="col-sm-9"></div>
+                                <?php echo "<input type='text' class='form-control' placeholder='".$dado_atual['nome_completo']."'> "; ?>                                                                                  
+                            </fieldset>                            
+                        </div>    
+                        <div class="col-sm-3">
+                            <div class="col-sm-4">
+                            <label for="subject">Campus:</label>
+                            </div>
+                            <div class="col-sm-8"></div>
+                                    <select id="subject" name="campus" class="form-control">                                        
+                                        <?php 
+                                            echo "<option value='".$dado_atual['idCampus_usuario']."' selected='' >".$dado_atual['campus_usuario']."</option>";
                                             $sql = "SELECT *
-                                                    FROM  perfil
-                                                    WHERE
-                                                        $condicao
-                                                    ORDER BY idPerfil ";
+                                                    FROM  campus
+                                                    WHERE idCampus <> ".$dado_atual['idCampus_usuario']."
+                                                    ORDER BY nomeCampus";
                                                             
-                                            $tipo_perfil = mysqli_query ($connect, $sql);
+                                            $perfil = mysqli_query ($connect, $sql);
 
-                                            while ($dados = mysqli_fetch_array($tipo_perfil)) {
-                                                $selecao_perfil = $selecao_perfil.'<option value="'.$dados['idPerfil'].'">'.$dados['nomePerfil'].'</option>';
-                                                };
+                                            while ($dados = mysqli_fetch_array($perfil)) {
+                                                echo '<option value="'.$dados['idCampus'].'">'.$dados['nomeCampus'].'</option>';
+                                            };
+                                        ?> 
+                                    </select>
+                        </div>
+                        <div class="col-sm-1"></div>
+                    </div>
+                </div> 
+                <!-- Fim da linha com o nome e sobrenome do usuário e Campus-->                
 
-                                            $selecao_perfil = $selecao_perfil."                                               
-                                                                    </select>
-                                                                    <p></p> ";
-                                    echo $selecao_perfil;
-                                }
-                            ?>
-                            <label for="subject">Login:</label>
-                            <input type="text" size="34" class="form-control" name="login" 
-                                   placeholder="Login" autofocus="" style="width: 40%;">
-                            <p></p>
+                <p></p>
+
+                <!-- Linha de cadastro de Telefone e E-mail -->
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-3">
+                            <div class="col-sm-5">
+                                <label for="subject">Telefone:</label>
+                            </div>
+                            <div class="col-sm-7"></div>
+                            <?php echo "<input type='tel' class='form-control' placeholder='".$dado_atual['telefone']."'> "; ?>       
+                        </div>
+
+                        <!-- Caso seja um usuário normal, ele não poderá ver a opção de alterar o menu -->
+                        <?php
+                            if ($usuario_comum) {
+                                echo "<div class='col-sm-7'>";                                
+                            }else {
+                                echo "<div class='col-sm-4'>";
+                            }
+                             ?>
+                            <div class="col-sm-3">
+                                <label for="tel">Email:</label>                                   
+                            </div>
+                                <?php echo "<input type='tel' class='form-control' placeholder='".$dado_atual['email']."'> "; ?>                                
+                        </div>
                         
-                            <label for="subject">Senha:</label>
-                            <input type="password" size="34" class="form-control" name="senha" placeholder="Senha" style="width: 40%;" />   
-                            <p></p>
+                    <?php 
+                        if (!$usuario_comum) {
+                        $opcao_perfil = "
+                        <div class='col-sm-3'>
+                            <div class='col-sm-3'>
+                                <label for='subject'>Perfil:</label>
+                            </div>
+                                    <select id='subject' name='perfil' class='form-control'>                                            
+                                        <option value='".$dado_atual['idPerfil_usuario']."' selected='' >".$dado_atual['perfil_usuario']."</option>";
+                                    
+                                    if ($usuario_adm) { 
+                                        $condicao = "1 = 1 and idPerfil <> ".$dado_atual['idPerfil_usuario'];
+                                    } else {                                        
+                                        $condicao = "idPerfil <> 4 and idPerfil <>".$dado_atual['idPerfil_usuario'];
+                                    }
 
-                            <label for="subject">Confime a senha:</label>
-                            <input type="password" size="34" class="form-control" name="confirma_senha" placeholder="Digite a senha novamente" style="width: 40%;" />     
-                            <p></p>
-                                               
-                        <div class="row">                            
-                            <center>                                
-                                <button class="btn btn-primary" type = "submit" name="enviar"><i class="fa fa-check"></i> &nbsp Enviar</button>                                 
-                            </center>
-                        </div>                        
-                        <p></p><p></p>
+                                    $sql = "SELECT *
+                                            FROM  perfil
+                                            WHERE
+                                                $condicao
+                                            ORDER BY idPerfil ";
+                                                    
+                                    $tipo_perfil = mysqli_query ($connect, $sql);
 
-                    <!-- Rodapé --> 
-                    <div class="animated fadeIn footer">
-                            &copy; 2018 Fast.
-                    </div> 
+                                    while ($dados = mysqli_fetch_array($tipo_perfil)) {
+                                        $opcao_perfil = $opcao_perfil."<option value='".$dados['idPerfil']."'>".$dados['nomePerfil']."</option> ";
+                                    };
+                                    $opcao_perfil = $opcao_perfil."
+                                    </select>
+                        </div> ";
 
-                    </div>                     
+                        echo $opcao_perfil;
+                        }
+                    ?>
+                        <div class="col-sm-1"></div>
+                    </div>
                 </div>
+                <!-- Fim da Linha de cadastro de Telefone e E-mail -->
+
+                <p></p>
+
+                <!-- Linha de cadastro de Campus, Genero e Perfil -->
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-3">
+                            <div class="col-sm-4">
+                                <label for="subject">Login:</label>
+                            </div>
+                            <?php echo "<input type='text' class='form-control' name='login' placeholder='".$dado_atual['login']."'> "; ?>                              
+                        </div>
+  
+                        <div class="col-sm-3">
+                            <div class="col-sm-4">
+                                <label for="subject">Senha:</label>
+                            </div>
+                            <input type="password" class="form-control" name="senha" placeholder="Senha">
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="col-sm-5">
+                                <label for="subject">Confime a senha:</label>
+                            </div>
+                                <input type="password" class="form-control" name="confirma_senha" placeholder="Digite a senha novamente">     
+                        </div>
+
+                        <div clas="col-sm-1"></div>
+                    </div>
+                </div>
+                <!-- Fim da Linha de cadastro de Campus, Genero e Perfil -->
+
+                <p></p>                                                   
+
+                <div class="row">                            
+                    <div class="col-sm-10"></div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary" type = "submit" name="enviar"><i class="fa fa-check"></i> &nbsp Enviar</button>                                 
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>                                  
             </form>
         </div>
  
