@@ -135,18 +135,37 @@
                                                 while ($dados = mysqli_fetch_array($chamado)) {
                                             ?>
                                                 <tr class="odd gradeX">
-                                                    <td><?php echo $dados['ticket'] ?></td>                                                
+                                                    <td><?php echo "<a href='detalhamento.php?idChamado=".$dados['codChamado']."' 
+                                                                                       id='link_tabela'>".$dados['ticket']."</a>"; 
+                                                        ?>
+                                                    </td>                                         
+
                                                     <td><?php
                                                             if ($perfil == 1) {
-                                                                echo $dados['responsavel'];
+                                                                echo "<a href='detalhamento.php?idChamado=".$dados['codChamado']."'
+                                                                                         id='link_tabela'>".$dados['responsavel']."</a>";
                                                             } else {
-                                                                echo $dados['usuario'];
+                                                                echo "<a href='detalhamento.php?idChamado=".$dados['codChamado']."'
+                                                                                         id='link_tabela'>".$dados['usuario']."</a>";
                                                             }                                                        
                                                         ?>
                                                     </td>
-                                                    <td><?php echo DATE('d/m/Y H:i:s', strtotime($dados['horaChamado'])); ?></td>
-                                                    <td class="center"><?php echo $dados['local'] ?></td>
-                                                    <td class="center"><?php echo $dados['descricao'] ?></td>
+
+                                                    <td><?php echo "<a href='detalhamento.php?idChamado=".$dados['codChamado']."' 
+                                                                                       id='link_tabela'>".DATE('d/m/Y H:i:s', strtotime($dados['horaChamado']))."</a>"; 
+                                                        ?>
+                                                    </td>      
+
+                                                    <td><?php echo "<a href='detalhamento.php?idChamado=".$dados['codChamado']."' 
+                                                                                       id='link_tabela'>".$dados['local']."</a>"; 
+                                                        ?>
+                                                    </td>  
+
+                                                    <td><?php echo "<a href='detalhamento.php?idChamado=".$dados['codChamado']."' 
+                                                                                       id='link_tabela'>".$dados['descricao']."</a>"; 
+                                                        ?>
+                                                    </td> 
+
                                                 </tr>
                                             
                                             <?php }; ?>
