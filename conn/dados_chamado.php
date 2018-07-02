@@ -51,14 +51,12 @@ $sql_chamado =
     $status_chamado = mysqli_fetch_array($retorno_status);
     $observacao_chamado = mysqli_fetch_array($retorno_observacao);
 
-    if (!empty($observacao_chamado['observacao']) OR !is_null($observacao_chamado['observacao'])){
-        $descricao_chamado = $dados_chamado['descricao']."
-            \n";
-        while ($dados = $observacao_chamado){
+    if (!empty($observacao_chamado['observacao']) AND !is_null($observacao_chamado['observacao'])){
+        $descricao_chamado = $dados_chamado['descricao']." \n";
+        while ($dados = mysqli_fetch_array($retorno_observacao)){
             $descricao_chamado = $descricao_chamado." 
-            Responsável: ".$observacao_chamado['usuario_observacao'].", Data da observação: ".DATE('d/m/Y H:i:s', strtotime($observacao_chamado['datahoraObservacao']))."
-            \n
-            Observação: ".$observacao_chamado['observacao']."\n";
+Responsável: ".$observacao_chamado['usuario_observacao'].", Data da observação: ".DATE('d/m/Y H:i:s', strtotime($observacao_chamado['datahoraObservacao']))."            
+Observação: ".$observacao_chamado['observacao']."\n";
 
         }
     } else {
