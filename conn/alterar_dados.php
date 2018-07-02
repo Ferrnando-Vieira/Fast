@@ -16,31 +16,75 @@ $id = $_SESSION['idUsuario'];
 
 $erro = 0; // 0 = sem erro, 1 = com erro
 
-$sql = "";
 
 if (isset($_GET['idUsr'])){
 
     $idUsuario = $_GET['idUsr'];
 
-    //Verificação de quais campos foram preenchidos e concatena com a string de inserção dos mesmos.
+    //Verificação de quais campos foram preenchidos 
     if (!empty($_POST['email']) and !is_null($_POST['email'])) {
         $email = mysqli_escape_string($connect, $_POST['email']);
-        $sql = $sql."UPDATE usuario set email = ".$email." WHERE idUsuario = $idUsuario;";
+        $sql = "UPDATE usuario set email = ".$email." WHERE idUsuario = $idUsuario;";
+
+        //Verifica se é possível realizar as alterações
+        if (mysqli_query($connect, $sql)) {
+            $_SESSION['mensagem'] = "Dados atualizados com sucesso.";
+
+        //Caso não seja possível é exibido uma mensagem de erro.
+        } else {
+            $_SESSION['mensagem'] = "Não foi possível alterar os dados, tente novamente mais tarde.";
+            $erro = 1;
+            
+        }   
     }
 
     if (!empty($_POST['telefone']) and !is_null($_POST['telefone'])) {
         $telefone = mysqli_escape_string($connect, $_POST['telefone']);
-        $sql = $sql."UPDATE usuario set telefone = ".$telefone." WHERE idUsuario = $idUsuario;";
+        $sql = "UPDATE usuario set telefone = ".$telefone." WHERE idUsuario = $idUsuario;";
+
+        //Verifica se é possível realizar as alterações
+        if (mysqli_query($connect, $sql)) {
+            $_SESSION['mensagem'] = "Dados atualizados com sucesso.";
+
+        //Caso não seja possível é exibido uma mensagem de erro.
+        } else {
+            $_SESSION['mensagem'] = "Não foi possível alterar os dados, tente novamente mais tarde.";
+            $erro = 1;
+            
+        }   
     }    
 
     if (!empty($_POST['campus']) and !is_null($_POST['campus'])) {
         $campus = mysqli_escape_string($connect, $_POST['campus']);
-        $sql = $sql."UPDATE usuario set idCampus = ".$campus."  WHERE idUsuario = $idUsuario;";
+        $sql = "UPDATE usuario set idCampus = ".$campus."  WHERE idUsuario = $idUsuario;";
+
+        //Verifica se é possível realizar as alterações
+        if (mysqli_query($connect, $sql)) {
+            $_SESSION['mensagem'] = "Dados atualizados com sucesso.";
+
+        //Caso não seja possível é exibido uma mensagem de erro.
+        } else {
+            $_SESSION['mensagem'] = "Não foi possível alterar os dados, tente novamente mais tarde.";
+            $erro = 1;
+            
+        }   
     }    
 
     if (!empty($_POST['perfil']) and !is_null($_POST['perfil'])) {
         $perfil = mysqli_escape_string($connect, $_POST['perfil']);
-        $sql = $sql."UPDATE usuario set idPerfil = ".$perfil."  WHERE idUsuario = $idUsuario;";
+        $sql = "UPDATE usuario set idPerfil = ".$perfil."  WHERE idUsuario = $idUsuario;";
+
+        //Verifica se é possível realizar as alterações
+        if (mysqli_query($connect, $sql)) {
+            $_SESSION['mensagem'] = "Dados atualizados com sucesso.";
+
+        //Caso não seja possível é exibido uma mensagem de erro.
+        } else {
+            $_SESSION['mensagem'] = "Não foi possível alterar os dados, tente novamente mais tarde.";
+            $erro = 1;
+            
+        }   
+
     }
     
     if (!empty($_POST['login']) and !is_null($_POST['login'])) {
@@ -67,7 +111,17 @@ if (isset($_GET['idUsr'])){
         }else{
 
             //Se não houver usuário repetido é realizado o update.
-            $sql = $sql."UPDATE usuario set login = ".$login."  WHERE idUsuario = $idUsuario;";
+            $sql = "UPDATE usuario set login = ".$login."  WHERE idUsuario = $idUsuario;";
+
+            //Verifica se é possível realizar as alterações
+            if (mysqli_query($connect, $sql)) {
+                $_SESSION['mensagem'] = "Dados atualizados com sucesso.";
+    
+            //Caso não seja possível é exibido uma mensagem de erro.
+            } else {
+                $_SESSION['mensagem'] = "Não foi possível alterar os dados, tente novamente mais tarde.";
+                $erro = 1;
+            }   
 
         }
         
@@ -82,7 +136,17 @@ if (isset($_GET['idUsr'])){
        
             //Criando o hash da senha para inserção no banco de dados
             $hash_senha = md5($senha);
-            $sql = $sql."UPDATE usuario set senha  = ".$hash_senha."  WHERE idUsuario = $idUsuario;";
+            $sql = "UPDATE usuario set senha  = ".$hash_senha."  WHERE idUsuario = $idUsuario;";
+
+            //Verifica se é possível realizar as alterações
+            if (mysqli_query($connect, $sql)) {
+                $_SESSION['mensagem'] = "Dados atualizados com sucesso.";
+    
+            //Caso não seja possível é exibido uma mensagem de erro.
+            } else {
+                $_SESSION['mensagem'] = "Não foi possível alterar os dados, tente novamente mais tarde.";
+                $erro = 1;
+            }   
 
         }else {
          
@@ -101,21 +165,10 @@ if (isset($_GET['idUsr'])){
 
  //Se não houve erros, é realizada a tentativa de inserir as alterações do usuário no banco
 if ($erro == 0) {
-
-    //Verifica se é possível realizar o update dos usuários no banco
-    if (mysqli_query($connect, $sql)) {
-
-        $_SESSION['mensagem'] = "Dados alterados com sucesso.";
-        header('Location: ../usuario.php?idUsr='.$idUsuario);
-        
-    //Caso não tenha sido criado é exibido uma mensagem de erro.
-    } else {
-        $_SESSION['mensagem'] = "Não foi possível alterar os dados, tente novamente mais tarde.".$sql;
-        header('Location: ../usuario.php?idUsr='.$idUsuario);
-    }
+    header('Location: ../usuario.php?idUsr='.$idUsuario);
 } else {
     //Caso tenha ocorrido algum erro, é retornado uma mensagem com eles.
-    $_SESSION['mensagem'] = "Não foi possível alterar os dados. ".$_SESSION['mensagem'];
+    $_SESSION['mensagem'] = "Ocorreram um ou mais erros. ".$_SESSION['mensagem'];
     header('Location: ../usuario.php?idUsr='.$idUsuario);
 }
 

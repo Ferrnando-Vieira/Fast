@@ -75,7 +75,7 @@
                                                 <th>Chamado</th>
                                                 <th>
                                                     <?php
-                                                        if ($perfil == 1) {
+                                                        if ($usuario_comum) {
                                                             echo 'Nome do Responsável';
                                                         } else {
                                                             echo 'Nome do Usuário';
@@ -141,7 +141,7 @@
                                                     </td>                                         
 
                                                     <td><?php
-                                                            if ($perfil == 1) {
+                                                            if ($usuario_comum) {
                                                                 echo "<a href='detalhamento.php?idChamado=".$dados['codChamado']."'
                                                                                          id='link_tabela'>".$dados['responsavel']."</a>";
                                                             } else {

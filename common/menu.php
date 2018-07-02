@@ -79,7 +79,7 @@
                     </li>  
 
                     <?php 
-                        if ($perfil <> 1) {     
+                        if (!$usuario_comum) {     
 
                             echo "<li> <a ";
                             if ($pagina_atual == "/acompanhamento.php?status=0&idUsr=".$id) { 

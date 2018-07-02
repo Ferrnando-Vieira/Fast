@@ -24,14 +24,6 @@
     $retorno = mysqli_query ($connect, $sql);
 
     $dado_atual = mysqli_fetch_array($retorno);
-
-    $id_perfis= array (
-        0 => '1',
-        1 => '2',
-        2 => '3',
-        3 => '4',
-    );
-
 ?>
 
 <html>
@@ -112,7 +104,7 @@
 
                 <p></p>
 
-                <!-- Linha de cadastro de Telefone e E-mail -->
+                <!-- Linha de alteração de Telefone, E-mail e Perfil-->
                 <div class="row">
                     <div class="form-group">
                         <div class="col-sm-1"></div>
@@ -175,11 +167,11 @@
                         <div class="col-sm-1"></div>
                     </div>
                 </div>
-                <!-- Fim da Linha de cadastro de Telefone e E-mail -->
+                <!-- Fim da Linha de alteração de Telefone, E-mail e Perfil -->
 
                 <p></p>
 
-                <!-- Linha de cadastro de Campus, Genero e Perfil -->
+                <!-- Linha de alteração de Login e Senha -->
                 <div class="row">
                     <div class="form-group">
                         <div class="col-sm-1"></div>
@@ -207,7 +199,7 @@
                         <div clas="col-sm-1"></div>
                     </div>
                 </div>
-                <!-- Fim da Linha de cadastro de Campus, Genero e Perfil -->
+                <!-- Fim da alteração de Login e Senha -->
 
                 <p></p>                                                   
 

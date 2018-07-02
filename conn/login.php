@@ -20,7 +20,7 @@
         $login = mysqli_escape_string($connect, $_POST['login']);
         $senha = mysqli_escape_string($connect, $_POST['senha']);
 
-        $sql = "SELECT usu.* FROM usuario usu WHERE usu.login = lower('$login');";
+        $sql = "SELECT usu.*, case when idPerfil = 1 then true else false end as usuario_comum FROM usuario usu WHERE usu.login = lower('$login');";
 
         $retorno = mysqli_query($connect, $sql);
         $dados_usuario = mysqli_fetch_array($retorno);
@@ -31,7 +31,7 @@
             $_SESSION['idUsuario'] = $dados_usuario ['idUsuario'];
             $_SESSION['ultimoAcesso'] = $dados_usuario ['ultimoAcesso'];
 
-            if ($_SESSION['perfil'] == 1) {
+            if ($dados_usuario['usuario_comum']) {
                 header('Location: home.php'); 
             }else{
                 header('Location: acompanhamento.php?status=0');
