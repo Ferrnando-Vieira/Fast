@@ -61,7 +61,7 @@
 
              <hr/>
             
-            <form accept-charset="UTF-8" <?php echo "action='conn/alterar_dados.php?idUsr=$idUsr' "; ?> method="POST">
+            <form accept-charset="UTF-8" <?php echo "action='conn/alterar_usuario.php?idUsr=$idUsr' "; ?> method="POST">
 
                 <!-- Linha com o nome e sobrenome do usuário e Campus-->
                 <div class="row">    
@@ -113,7 +113,7 @@
                                 <label for="subject">Telefone:</label>
                             </div>
                             <div class="col-sm-7"></div>
-                            <?php echo "<input type='tel' class='form-control' placeholder='".$dado_atual['telefone']."'> "; ?>       
+                            <?php echo "<input type='tel' class='form-control' name='telefone' placeholder='".$dado_atual['telefone']."'> "; ?>       
                         </div>
 
                         <!-- Caso seja um usuário normal, ele não poderá ver a opção de alterar o menu -->
@@ -127,7 +127,7 @@
                             <div class="col-sm-3">
                                 <label for="tel">Email:</label>                                   
                             </div>
-                                <?php echo "<input type='tel' class='form-control' placeholder='".$dado_atual['email']."'> "; ?>                                
+                                <?php echo "<input type='tel' class='form-control' name='email' placeholder='".$dado_atual['email']."'> "; ?>                                
                         </div>
                         
                     <?php 
