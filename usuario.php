@@ -59,9 +59,21 @@
                 </div>  
             </div>              
 
-             <hr/>
-            
-            <form accept-charset="UTF-8" <?php echo "action='conn/alterar_usuario.php?idUsr=$idUsr' "; ?> method="POST">
+             <hr/>         
+
+            <div class="row">                
+                <?php echo "<img src='".$img_perfil['img']."' class='user-image img-rounded img-responsive'/>"; ?>             
+            </div>
+
+            <form accept-charset="UTF-8" <?php echo "action='conn/alterar_usuario.php?idUsr=$idUsr' "; ?> method="POST" enctype="multipart/form-data">
+
+                <p></p>
+
+                <div class="row">            
+                    <input type="file" class="custom-file-input" name="foto">                               
+                </div>
+                    
+                <p></p>
 
                 <!-- Linha com o nome e sobrenome do usuário e Campus-->
                 <div class="row">    
@@ -203,13 +215,20 @@
 
                 <p></p>                                                   
 
-                <div class="row">                            
+                <div class="row">                   
                     <div class="col-sm-10"></div>
                     <div class="col-sm-1">
-                        <button class="btn btn-primary" type = "submit" name="enviar"><i class="fa fa-check"></i> &nbsp Enviar</button>                                 
+                        <button class="btn btn-primary" type="submit" name="enviar"><i class="fa fa-check"></i> Enviar </button>                                 
                     </div>
                     <div class="col-sm-1"></div>
-                </div>                                  
+                </div>      
+
+            <p></p><p></p>
+            <!-- Rodapé --> 
+            <div class="animated fadeIn footer">
+                    &copy; 2018 Fast.
+            </div>
+
             </form>
         </div>
  

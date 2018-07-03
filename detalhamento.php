@@ -47,7 +47,7 @@
 
              <hr/>
             
-            <form accept-charset="UTF-8" <?php echo "action='conn/alterar_chamado.php?idChamado=$idChamado' "; ?> method="POST">
+            <form accept-charset="UTF-8" <?php echo "action='conn/alterar_chamado.php?idChamado=$idChamado&idResponsavel=$responsavel' "; ?> method="POST">
 
                 <!-- Linha com nome completo e numero do chamado-->
                 <div class="row">    
@@ -230,7 +230,11 @@
                                 <div class='col-sm-1'>
                                     <button class='btn btn-secondary' name='apropriar'> Apropriar Chamado </button>
                                 </div>
-                                <div class='col-sm-6'></div>
+                                <div class='col-sm-1'></div>
+                                <div class='col-sm-1'>
+                                <button class='btn btn-secondary' name='desapropriar'> Desapropriar Chamado </button>
+                                </div>
+                                <div class='col-sm-4'></div>
                                 <div class='col-sm-1'>                                              
                                     <button class='btn btn-secondary' name='mostrarObs'> Adicionar Observação </button>                             
                                 </div>

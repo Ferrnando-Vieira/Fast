@@ -31,7 +31,7 @@
     $sql = "SELECT usu.*, cam.idCampus as idCampus_usuario, cam.nomeCampus as campus_usuario,
             case when idPerfil = 1 then true else false end as usuario_comum ,
             case when idPerfil = 4 then true else false end as usuario_adm
-            FROM usuario usu , campus cam
+            FROM usuario usu, campus cam
             WHERE usu.idUsuario = $id
                   and cam.idCampus = usu.idCampus ";
     $sql_user = mysqli_query($connect, $sql);
@@ -42,4 +42,5 @@
     $usuario_adm = $dados_user['usuario_adm'];
     $campus_usu = $dados_user['campus_usuario'];
     $idCampus_usu = $dados_user['idCampus_usuario'];
+    $idArquivo = $dados_user['idArquivo'];
 ?>

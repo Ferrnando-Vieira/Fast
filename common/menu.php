@@ -1,4 +1,21 @@
-<?php $pagina_atual = $_SERVER['PHP_SELF']; ?>
+<?php $pagina_atual = $_SERVER['PHP_SELF']; 
+
+        $sql =
+        "SELECT 
+            COALESCE(CONCAT(arq.local_arquivo,arq.nome_arquivo),'users/user_img/find_user.png') as img
+        FROM
+            arquivos arq
+        WHERE
+            arq.idArquivo = ".$idArquivo;
+
+        $retorno_arqu = mysqli_query($connect, $sql);
+    
+        if (mysqli_num_rows($retorno_arqu) > 0){
+            $img_perfil = mysqli_fetch_array($retorno_arqu);
+        } else {
+            $img_perfil = "users/user_img/find_user.png";
+        }    
+?>
 
   <!-- Menu Superior -->
   <nav class="navbar navbar-default navbar-cls-top painelNome" role="navigation" >
@@ -29,7 +46,7 @@
                     <!-- Link na imagem do usuário para a tela de alteração dos dados -->
                     <?php echo "<a href='usuario.php?idUsr=".$id."'>"; ?>
                         <li class="text-center">
-                            <img src="img/find_user.png" class="user-image img-responsive"/>
+                            <?php echo "<img src='".$img_perfil['img']."' class='user-image img-rounded img-responsive'/>"; ?>
                         </li>            
                     </a>
                     <li>

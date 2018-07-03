@@ -156,6 +156,70 @@ if (isset($_GET['idUsr'])){
         }
         
     }
+
+     
+    //Verificação se há algum arquivo
+    if ($_FILES['foto']['name'] <> "") {           
+
+        //Extensão do arquivo
+        $extensao = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+
+        //Pasta onde o arquivo será transferido
+        $pasta = "users/user_img/";
+        //Nome temporário do arquivo
+        $temporario = $_FILES['foto']['tmp_name'];
+
+
+        $sql = "SELECT CONCAT(LPAD ($idUsuario, 5, '0')) as nome_imagem";
+        $retorno = mysqli_query($connect, $sql);
+        $nome = mysqli_fetch_array($retorno);
+        $novoNome = $nome['nome_imagem'].".$extensao";
+
+        //Verifica se já há alguma foto de perfil
+        if(!is_null($idArquivo) AND !empty($idArquivo)){
+            unlink($pasta.$novoNome);
+
+            //Arquivo sendo renomeado e transferido para a pasta do servidor.
+            if (move_uploaded_file($temporario, $pasta.$novoNome)) {                
+
+                $upd_arquivo = "UPDATE arquivos SET dtHora_envio = now() WHERE idArquivo = ".$idArquivo;
+                mysqli_query($connect, $ins_arquivo);
+                
+            } else {
+                $_SESSION['mensagem']  = $_SESSION['mensagem']."<br> Não foi possível realizar a alteração da imagem de perfil. Favor verificar se a imagem não possui mais de 2MB.";
+                $erro = 1;                                                                              
+            } 
+        }else{
+        
+            //Arquivo sendo renomeado e transferido para a pasta do servidor.
+            if (move_uploaded_file($temporario, "../".$pasta.$novoNome)) {                
+
+                $ins_arquivo = "INSERT INTO arquivos (nome_arquivo, extensao_arquivo, local_arquivo, idUsuario, dtHora_envio)
+                                VALUE ('$novoNome', '$extensao', '$pasta', $idUsuario, now())";
+                
+                //verifica se foi possível inserir o caminho do arquivo no banco
+                if (mysqli_query($connect, $ins_arquivo)) {                    
+
+                    $idArquivo = mysqli_insert_id($connect);
+                    
+                    //Realizado update no usuário para redirecionar para a nova foto.
+                    $ins_arquivo = "UPDATE usuario SET idArquivo = ".$idArquivo." WHERE idUsuario = ".$idUsuario;
+
+                    mysqli_query($connect, $ins_arquivo);
+
+                //Caso não tenha sido possível, é informado.
+                } else {
+                    $_SESSION['mensagem'] = $_SESSION['mensagem']."<br> Não foi possível realizar a alteração da imagem de perfil. Favor verificar se a imagem não possui mais de 2MB.";
+                    $erro = 1;                                                                              
+                } 
+
+            } else {
+                $_SESSION['mensagem']  = $_SESSION['mensagem']."<br> Não foi possível realizar a alteração da imagem de perfil. Favor verificar se a imagem não possui mais de 2MB.";
+                $erro = 1;                                                                              
+            }        
+        } 
+    } 
+
     
 } else {
     $_SESSION['mensagem'] = "Nã foi possível recuperar o usuário.<br>";

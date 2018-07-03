@@ -41,15 +41,46 @@ if (isset($_POST['mostrarObs'])){
         $_SESSION['mensagem'] = "Não foi possível apropriar o chamado, tente novamente mais tarde";
     }
 
+    //Chamados apropriados vão para o status Em atendimento
     $sql = "UPDATE chamado SET idStatus = 2 WHERE idChamado = ".$idChamado;
 
-    if (mysqli_query($connect, $sql)) {
-        $_SESSION['mensagem'] = "Chamado apropriado com sucesso.";    
-    } else {
-        $_SESSION['mensagem'] = "Não foi possível apropriar o chamado, tente novamente mais tarde";
-    }
+    mysqli_query($connect, $sql);
 
-        header("Location: ../detalhamento.php?idChamado=".$idChamado); 
+    header("Location: ../detalhamento.php?idChamado=".$idChamado); 
+
+
+//Verificar se a opção de desapropriação de chamado foi selecionada
+} elseif (isset($_POST['desapropriar'])) {    
+    
+    if (empty($_GET['idResponsavel'])) {
+        $_SESSION['mensagem'] = "Não foi possível realizar a desapropriação, o chamado não possui responsável.";
+        header("Location: ../detalhamento.php?idChamado=".$idChamado);
+    } else {
+    $sql = "UPDATE chamado SET idUsuarioNSI = NULL WHERE idChamado = ".$idChamado;
+    
+        if (mysqli_query($connect, $sql)) {
+            $_SESSION['mensagem'] = "Chamado desapropriado com sucesso.";    
+        } else {
+            $_SESSION['mensagem'] = "Não foi possível desapropriar o chamado, tente novamente mais tarde";
+        }
+    
+    
+    //Chamado desapropriados mudam para o status aberto
+    $sql = "UPDATE chamado SET idStatus = 1 WHERE idChamado = ".$idChamado;
+
+    mysqli_query($connect, $sql);
+
+    $observacao = "Chamado desapropriado.";
+    $observacao = mysqli_escape_string($connect, $observacao);
+
+    $sql = "INSERT INTO observacaoChamado (idChamado, idUsuario, datahoraObservacao, descricaoObservacao)
+    VALUES ($idChamado, $id, now(),'$observacao' ); ";
+
+    mysqli_query($connect, $sql);
+
+    header("Location: ../detalhamento.php?idChamado=".$idChamado);    
+        
+    }
 //Se foi inserção de observação/alteração de status
 } else {  
     

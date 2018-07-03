@@ -51,6 +51,8 @@
     $dados_chamado = mysqli_fetch_array($retorno_chamado);
     $status_chamado = mysqli_fetch_array($retorno_status);
 
+
+    $responsavel = $dados_chamado['responsavel'];
     $descricao_chamado = $dados_chamado['descricao'];
 
 //Exibição da descrição do chamado e histórico de observação
