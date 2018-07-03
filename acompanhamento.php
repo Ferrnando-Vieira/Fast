@@ -7,7 +7,9 @@
         $status_chamado = null;        
     } else {
         $_SESSION['mensagem'] = "Não foi possível exibir os chamados, tente novamente mais tarde.";
-    }
+    }    
+
+    header("Refresh:30");
 ?>
 
 <html>
@@ -102,7 +104,7 @@
 
                                                     //Caso não seja um usuaŕio comum e o mesmo tenha clicado para ver a fila de chamados
                                                     }else {
-                                                        $condicao =  "cha.idStatus not in (4,5)";
+                                                        $condicao =  "cha.idStatus not in (4,5) and cha.idUsuarioNSI is null";
                                                     }
 
                                                 //Chamados por Status

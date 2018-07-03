@@ -36,13 +36,20 @@ if (isset($_POST['mostrarObs'])){
     $sql = "UPDATE chamado SET idUsuarioNSI = ".$id." WHERE idChamado = ".$idChamado;
 
     if (mysqli_query($connect, $sql)) {
-        $_SESSION['mensagem'] = "Chamado apropriado com sucesso.";
-        header("Location: ../detalhamento.php?idChamado=".$idChamado); 
+        $_SESSION['mensagem'] = "Chamado apropriado com sucesso.";    
     } else {
         $_SESSION['mensagem'] = "Não foi possível apropriar o chamado, tente novamente mais tarde";
-        header("Location: ../detalhamento.php?idChamado=".$idChamado); 
     }
 
+    $sql = "UPDATE chamado SET idStatus = 2 WHERE idChamado = ".$idChamado;
+
+    if (mysqli_query($connect, $sql)) {
+        $_SESSION['mensagem'] = "Chamado apropriado com sucesso.";    
+    } else {
+        $_SESSION['mensagem'] = "Não foi possível apropriar o chamado, tente novamente mais tarde";
+    }
+
+        header("Location: ../detalhamento.php?idChamado=".$idChamado); 
 //Se foi inserção de observação/alteração de status
 } else {  
     

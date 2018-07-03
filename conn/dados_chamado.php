@@ -1,10 +1,11 @@
 <?php
-$sql_chamado =
+    $sql_chamado =
            "SELECT
               CONCAT(usu.nome, ' ',usu.sobrenome) as nome_completo, cam.nomeCampus as campus
             , usu.email, usu.telefone, stat.nomeStatus as status, cat.nomeCategoria as categoria
             , cha.ticket, cha.local, cha.dtHoraAbertura as abertura_chamado, cha.idUsuarioNSI as responsavel
             , cha.descricao, COALESCE(CONCAT(nsi.nome, ' ',nsi.sobrenome), 'Sem Responsável') as nome_responsavel
+            , cha.anexo
             FROM
               chamado cha
             left join usuario nsi on nsi.idUsuario = cha.idUsuarioNSI
@@ -49,17 +50,58 @@ $sql_chamado =
 
     $dados_chamado = mysqli_fetch_array($retorno_chamado);
     $status_chamado = mysqli_fetch_array($retorno_status);
-    $observacao_chamado = mysqli_fetch_array($retorno_observacao);
 
-    if (!empty($observacao_chamado['observacao']) AND !is_null($observacao_chamado['observacao'])){
-        $descricao_chamado = $dados_chamado['descricao']." \n";
-        while ($dados = mysqli_fetch_array($retorno_observacao)){
-            $descricao_chamado = $descricao_chamado." 
-Responsável: ".$observacao_chamado['usuario_observacao'].", Data da observação: ".DATE('d/m/Y H:i:s', strtotime($observacao_chamado['datahoraObservacao']))."            
-Observação: ".$observacao_chamado['observacao']."\n";
+    $descricao_chamado = $dados_chamado['descricao'];
 
-        }
-    } else {
-        $descricao_chamado = $dados_chamado['descricao']; 
+//Exibição da descrição do chamado e histórico de observação
+if (mysqli_num_rows($retorno_observacao) > 0) {
+$descricao_chamado = $descricao_chamado."\n
+------------------------------------------------
+Observações do Chamado: \n";
+
+    while ($dados = mysqli_fetch_array($retorno_observacao)){
+        $descricao_chamado = $descricao_chamado." 
+Responsável: ".$dados['usuario_observacao'].", Data da observação: ".DATE('d/m/Y H:i:s', strtotime($dados['datahoraObservacao']))."            
+Observação: ".$dados['observacao']."\n";
+
     }
+}
+
+$lista_anexo = "";
+
+//Verifica se há arquivos anexos e retorna os mesmos
+if ($dados_chamado['anexo']) {
+
+    $sql_anexo = 
+        "SELECT 
+            arq.nome_arquivo
+          , arq.local_arquivo        
+         FROM
+            arquivos arq
+         WHERE
+            arq.idChamado = ".$idChamado;
+
+    $retorno_anexo = mysqli_query($connect,$sql_anexo);   
+
+    $lista_anexo = "
+    <div class='row'>
+        
+        <div class='col-sm-12'>
+            <div class='col-sm-3'>
+                <strong>  Arquivos Anexados: </strong>
+            </div>
+            <div class='col-sm-1'> ";
+            
+    while($dados = mysqli_fetch_array($retorno_anexo)){        
+        $lista_anexo = $lista_anexo."<a href='".$dados['local_arquivo'].$dados['nome_arquivo']."' target='_blank'>".$dados['nome_arquivo']." </a>";
+        
+    }
+    $lista_anexo = $lista_anexo."
+            </div>
+            <div class='col-sm-1'></div>
+        </div>
+        <div class='col-sm-1'></div>
+    </div>";
+}
+
 ?>

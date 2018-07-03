@@ -212,13 +212,14 @@
                                 <div class='col-sm-2'>                                                     
                                     <label for='subject'>Observação:</label> 
                                 </div>
-                                <div class='span4' style='padding-bottom:0' >
-                                    <textarea class='span4 well' name='observacao' placeholder='Adicione uma informação ao chamado'
+                                <div class='span4' style='padding-bottom:0'  >
+                                    <textarea class='span4 well' autofocus name='observacao' placeholder='Adicione uma informação ao chamado'
                                                             rows='10' style='width:80%'></textarea>                                        
                                 </div>                                                                                                          
                             </div>
                         </div>";
                     }
+
                 ?>
 
                 <?php
@@ -239,12 +240,24 @@
                                     <button class='btn btn-primary' type = 'submit' name='enviar'><i class='fa fa-check'></i> Enviar </button>                                 
                                 </div>
                                 <div class='col-sm-1'></div>
-                            </div>   ";
-                    }                                                                              
+                            </div>   
+                            
+                            <p></p>";
+                    }   
+                    
+                    echo $lista_anexo;
+                    
                 ?>                                               
             </form>
+
+            <p></p><p></p>
+
+             <!-- Rodapé --> 
+             <div class="animated fadeIn footer">
+                    &copy; 2018 Fast.
+            </div> 
         </div>
- 
+
         </center>        
         <!-- Fim do centro -->
     </div>

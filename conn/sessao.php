@@ -28,15 +28,18 @@
         $home = "acompanhamento.php?status=0";
     }
 
-    $sql = "SELECT usu.*, 
+    $sql = "SELECT usu.*, cam.idCampus as idCampus_usuario, cam.nomeCampus as campus_usuario,
             case when idPerfil = 1 then true else false end as usuario_comum ,
             case when idPerfil = 4 then true else false end as usuario_adm
-            FROM usuario usu 
-            WHERE usu.idUsuario = $id ";
+            FROM usuario usu , campus cam
+            WHERE usu.idUsuario = $id
+                  and cam.idCampus = usu.idCampus ";
     $sql_user = mysqli_query($connect, $sql);
     $dados_user = mysqli_fetch_array($sql_user);
 
     $perfil = $dados_user['idPerfil'];
     $usuario_comum = $dados_user['usuario_comum'];
     $usuario_adm = $dados_user['usuario_adm'];
+    $campus_usu = $dados_user['campus_usuario'];
+    $idCampus_usu = $dados_user['idCampus_usuario'];
 ?>

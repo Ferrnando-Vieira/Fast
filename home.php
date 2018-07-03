@@ -42,20 +42,23 @@
                     <div class="col-md-6">                        
                         <div class="form-group">                        
                             <label for="subject">Campus</label>
-                                <select name="campus" class="form-control" required="required" style="width:50%">
-                                    <option value="" selected=""></option>                                                                             
-                                        <?php 
+                                <select name="campus" class="form-control" required="required" style="width:50%">                                                                                                                 
+                                    
+                                    <?php 
 
-                                            $sql = " SELECT cam.idCampus, cam.nomeCampus
-                                                     FROM  campus cam ";
-                                                            
-                                            $campus = mysqli_query ($connect, $sql);
+                                        echo "<option value='".$idCampus_usu."' selected=''>".$campus_usu."</option>";
 
-                                            while ($dados = mysqli_fetch_array($campus)) {
-                                                echo '<option value="'.$dados['idCampus'].'">'.$dados['nomeCampus'].'</option>';
-                                            };
+                                        $sql = "SELECT cam.idCampus, cam.nomeCampus
+                                                FROM   campus cam 
+                                                WHERE cam.idCampus <> ".$idCampus_usu;
+                                                        
+                                        $campus = mysqli_query ($connect, $sql);
 
-                                        ?>                         
+                                        while ($dados = mysqli_fetch_array($campus)) {
+                                            echo "<option value='".$dados['idCampus']."'>".$dados['nomeCampus']."</option>";
+                                        };
+
+                                    ?>                         
 
                                 </select>
                         </div>   

@@ -38,6 +38,23 @@ $categoria = mysqli_escape_string($connect, $_POST['categoria']);
 $descricao = mysqli_escape_string($connect, $_POST['descricao']);
 
 
+$ins_chamado = "INSERT INTO chamado (idUsuario,idCampus,idCategoria, local ,dtHoraAbertura, ticket ,descricao) 
+VALUES ($id, $campus, $categoria, '$local' , '$abertura_chamado' , '$numero_chamado' , '$descricao');";
+
+//verifica se foi possível abrir o chamado
+if (mysqli_query($connect, $ins_chamado)) {
+       
+    $_SESSION['mensagem'] = "Chamado aberto com sucesso!";
+
+    //Id do chamado aberto
+    $idChamado = mysqli_insert_id($connect);
+
+//Caso não tenha sido criado o chamado é exibido uma mensagem de erro.
+} else {
+    $_SESSION['mensagem'] = "Não foi possível abrir o chamado.";                          
+    header('Location: ../home.php');
+}
+
  // Upload de arquivos multiplos para o servidor
 if(isset($_POST['enviar'])){
     
@@ -51,36 +68,34 @@ if(isset($_POST['enviar'])){
 
             //Extensão do arquivo
             $extensao = pathinfo($_FILES['arquivos_']['name'][$contador], PATHINFO_EXTENSION);
-
-            //Tamanho do arquivo
-            (int)$tamanho = $_FILES["file"]["size"][$contador];                
-
-            /*  //Pasta onde o arquivo será transferido
-            $pasta = "../users/user_uplod/";*/
-
+ 
+            //Pasta onde o arquivo será transferido
+            $pasta = "../users/user_uplod/";
             //Nome temporário do arquivo
             $temporario = $_FILES['arquivos_']['tmp_name'][$contador];
+  
+            //O nome do arquivo é o ticket concatenado com o numero do arquivo no contador.
+            $novoNome = $numero_chamado.($contador + 1).".$extensao";
+              
+            //Arquivo sendo renomeado e transferido para a pasta do servidor.
+            if (move_uploaded_file($temporario, $pasta.$novoNome)) {                
 
-            //Nome sem a extensão
-            $nome = $numero_chamado.($contador + 1);
+                $ins_arquivo = "INSERT INTO arquivos (nome_arquivo, extensao_arquivo, local_arquivo, idChamado, dtHora_envio)
+                                VALUE ('$novoNome', '$extensao', '$pasta', $idChamado, now())";
+                
+                //verifica se foi possível inserir o caminho do arquivo no banco
+                if (mysqli_query($connect, $ins_arquivo)) {                    
+                    $possui_anexo = true;                    
 
-            //Arquivo
-            $arquivo = file_get_contents($temporario);
+                //Caso não tenha sido possível, é informado.
+                } else {
+                    $msg_arquivo = "<br> Um ou mais arquivos não puderam ser adicionados!";
+                    $erro = 1;                                                                              
+                } 
 
-            //Escape para evitar erro no MySQL
-            $arquivo = mysqli_real_escape_string($connect,$arquivo);
-
-
-            //Sql para inserir o arquivo no banco
-            $sql = "INSERT INTO arquivos (nomeArquivo, extensaoArquivo, arquivo)
-                    VALUES ('$nome', '$extensao', '$arquivo');";
-            
-            if (mysqli_query($connect, $sql)) {
-                $_SESSION['mensagem'] = "Upload do(s) arquivo(s) realizado! <br>";  
-                $possui_anexo = true;
             } else {
-                $_SESSION['mensagem'] = "<br> Um ou mais arquivos não puderam ser adicionados!<br>";
-                $erro = 1;                      
+                $msg_arquivo = "<br> Um ou mais arquivos não puderam ser adicionados!";
+                $erro = 1;                                                                              
             }
 
             $contador++;
@@ -93,32 +108,21 @@ if(isset($_POST['enviar'])){
     }
 }
 
+if ($possui_anexo){
+    $sql = "UPDATE chamado SET anexo = true WHERE idChamado = ".$idChamado;
+    mysqli_query($connect, $sql);
+}
+
  //Abertura do chamado caso não tenha ocorrido erro de upload
 if ($erro == 0) {
 
-    // SQL para criação do chamado
-    $ins_chamado = "INSERT INTO chamado (idUsuario,idCampus,idCategoria, local ,dtHoraAbertura, ticket ,descricao, anexo) 
-    VALUES ($id, $campus, $categoria, '$local' , '$abertura_chamado' , '$numero_chamado' , '$descricao', '$possui_anexo');";
+    header('Location: ../home.php');    
 
-    //verifica se foi possível abrir o chamado
-    if (mysqli_query($connect, $ins_chamado)) {
-        if ($possui_anexo) {
-            $_SESSION['mensagem'] = $_SESSION['mensagem']."Chamado aberto com sucesso.";
-            header('Location: ../home.php');
-        } else {
-            $_SESSION['mensagem'] = "Chamado aberto com sucesso.";
-            header('Location: ../home.php');
-        }
-    //Caso não tenha sido criado o chamado é exibido uma mensagem de erro.
-    } else {
-        $_SESSION['mensagem'] = "Não foi possível abrir o chamado. 
-                             <br>Verifique se o tamanho somado dos arquivos não ultrapassa 2MB ou tente novamente mais tarde.";
-        header('Location: ../home.php');
-    }
 } else {
-    //Caso tenha ocorrido erro no upload é apresentada uma mensagem de erro.
-    $_SESSION['mensagem'] = "Não foi possível abrir o chamado. ".$_SESSION['mensagem'];
-    header('Location: ../home.php');
+    
+    $_SESSION['mensagem'] = $_SESSION['mensagem'].$msg_arquivo."<br>Verifique se o tamanho somado dos arquivos não ultrapassa 2MB ou tente novamente mais tarde.";
+
 }
+
 
 ?>
